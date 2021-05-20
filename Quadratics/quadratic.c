@@ -11,8 +11,8 @@ double * quadroots(int a, int b, int c) {
   int delta = determinant(a, b, c);
 	assert(delta >= 0);
 
-	double root1 = (-b + sqrt(delta)) / (2 * a);
-	double root2 = (-b - sqrt(delta)) / (2 * a);
+	double root1 = (-b + sqrt((double)delta)) / (2 * a);
+	double root2 = (-b - sqrt((double)delta)) / (2 * a);
 
 	static double roots[2];
 	roots[0] = root1;
