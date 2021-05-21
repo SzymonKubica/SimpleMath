@@ -22,6 +22,11 @@ void resize(struct List *list) {
 		*(newList + i) = *(oldList + i);
 	}
 	oldList = newList;
+	free(newList);
+}
+
+void freeList(struct List *list) {
+	free((*list).list);
 }
 
 /* Shifts all of the elements left starting from index + 1 to list.size index.
@@ -109,4 +114,6 @@ int main(void) {
 	}
 
 	printList(list);
+
+	freeList(&list);
 }
