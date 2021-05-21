@@ -1,6 +1,6 @@
 CC     = gcc
 CFLAGS = -Wall
-BUILD  = quadratics utils fibs
+BUILD  = quadratics utils fibs toBinary
 
 all: $(BUILD)	
 
@@ -9,6 +9,7 @@ clean:
 			cd Quadratics; make clean
 			cd Utilities; make clean
 			cd Fibonacci; make clean
+			cd BinaryConversions; make clean
 
 quadratics: 
 	         cd Quadratics; make 
@@ -16,3 +17,5 @@ utils:
 	         cd Utilities; make 
 fibs: 
 	         cd Fibonacci; make 
+toBinary: 
+	         cd BinaryConversions; make 

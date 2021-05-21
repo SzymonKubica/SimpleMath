@@ -2,31 +2,24 @@
 #include<stdbool.h>
 #include<string.h>
 #include<stdlib.h>
-#include<assert.h>
 
 static const int MAX_NUMBER_LENGTH = 10;
 
-enum Operator {Plus, Minus, Times, Divide, NotAnOperator};
+typedef enum Operator {Plus, Minus, Times, Divide} Operator;
 
-typedef enum Operator Operator;
+typedef enum TokenType {Operator, Number} TokenType;
 
-enum TokenType {OperatorType, NumberType} ;
-
-typedef enum TokenType TokenType;
-
-struct Number {
+typedef struct Number {
 	int value;
-};
+} Number;
 
-typedef struct Number Number;
-
-struct Token {
+typedef struct Token {
 	TokenType type;
-	Operator operator;
-	Number number;
-};
-
-typedef struct Token Token;
+	union {
+		Operator;
+		Number;
+	}
+} Token;
 
 bool isDigit(char ch) {
 	return '0' <= ch && ch <= '9';
@@ -58,7 +51,6 @@ Operator parseOperator(char op) {
 			return Divide;
 			break;
 	}
-	return NotAnOperator;
 }
 
 int countSpaces(char *str) {
@@ -74,7 +66,7 @@ int countSpaces(char *str) {
 
 char * trim(char *str, int length) {
 	int spacesCount = countSpaces(str);
-	char * trimmedString = (char*) malloc(length - spacesCount);
+	char * trimmedString = (* char) malloc(length - spacesCount);
 	char * trimmedPtr = trimmedString;
 	for (int i = 0; i < length; i++) {
 		if (!isWhiteSpace(*(str + i))) {
@@ -85,34 +77,28 @@ char * trim(char *str, int length) {
 	return trimmedString;
 }
 
-Token * tokenise(char *str, int length) {
+Token * tokenise(char * str, int length) {
 	char *strTrimmed = trim(str, length);
 	int spacesCount = countSpaces(str);
-	Token *tokens = (Token*) malloc(length - spacesCount);
+	Token *tokens = (* struct Token) malloc(length - spacesCount);
 	while (*strTrimmed != '\0') {
 		if (isDigit(*strTrimmed)) {
 			char *number = strTrimmed;
-			char *buffer = (char*) malloc(MAX_NUMBER_LENGTH);
+			char *buffer = (* char) malloc(MAX_NUMBER_LENGTH)
 			int numberLength = 1;
 			while (isDigit(*number)) {
 				*buffer = *number;
 				buffer++;
 				numberLength++;
 			}
-			Number num = {atoi(buffer)};
-			Token token; 
-			token.type = NumberType;
-			token.number = num;
-			*tokens = token;
+			Number number = { atoi(buffer) }
+			*tokens = Token { false, number }
 			free(buffer);
 			tokens++;
 			strTrimmed += numberLength;
 		} else if (isOperator(*strTrimmed)) {
 			Operator op = parseOperator(*strTrimmed);
-			Token token;
-			token.type = OperatorType;
-			token.operator = op;
-			*tokens = token;
+			*tokens = Token { true, op}
 			tokens++;
 			strTrimmed++;
 		}
@@ -122,7 +108,7 @@ Token * tokenise(char *str, int length) {
 }
 
 int main(void) {
-	char input[] = "2 + 3 * 6";
+	char[] input = "2 + 3 * 6"
 
 	Token *tokens = tokenise(input, sizeof(input));
 
