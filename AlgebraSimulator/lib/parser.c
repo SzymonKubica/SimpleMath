@@ -65,7 +65,7 @@ int countSpaces(char *str) {
 	int counter = 0;
 	char *ptr = str;
 	for(; *ptr != '\0'; ptr++) {
-		if (isWhiteSpace(*ptr)) {
+		if (isWhiteSpace(*ptr) || (!isDigit(*ptr) && !isOperator(*ptr)) && *ptr != '0') {
 			counter++;
 		}
 	}
@@ -77,11 +77,14 @@ char * trim(char *str, int length) {
 	char * trimmedString = (char*) malloc(length - spacesCount);
 	char * trimmedPtr = trimmedString;
 	for (int i = 0; i < length; i++) {
-		if (!isWhiteSpace(*(str + i))) {
+		if (!isWhiteSpace(*(str + i))
+					&& (isDigit(*(str + i)) || isOperator(*(str + i)))
+		) {
 			*trimmedPtr = *(str + i);	
 			trimmedPtr++;
 		}
 	}
+	*trimmedPtr = '\0';
 	return trimmedString;
 }
 
@@ -89,42 +92,90 @@ Token * tokenise(char *str, int length) {
 	char *strTrimmed = trim(str, length);
 	int spacesCount = countSpaces(str);
 	Token *tokens = (Token*) malloc(length - spacesCount);
+	Token *tokensPtr = tokens;
 	while (*strTrimmed != '\0') {
 		if (isDigit(*strTrimmed)) {
 			char *number = strTrimmed;
 			char *buffer = (char*) malloc(MAX_NUMBER_LENGTH);
-			int numberLength = 1;
+			char *ptr = buffer;
+			int numberLength = 0;
 			while (isDigit(*number)) {
-				*buffer = *number;
-				buffer++;
+				*ptr = *number;
+				ptr++;
+				number++;
 				numberLength++;
 			}
 			Number num = {atoi(buffer)};
 			Token token; 
 			token.type = NumberType;
 			token.number = num;
-			*tokens = token;
-			free(buffer);
-			tokens++;
+			*tokensPtr = token;
+			tokensPtr++;
 			strTrimmed += numberLength;
 		} else if (isOperator(*strTrimmed)) {
 			Operator op = parseOperator(*strTrimmed);
 			Token token;
 			token.type = OperatorType;
 			token.operator = op;
-			*tokens = token;
-			tokens++;
+			*tokensPtr = token;
+			tokensPtr++;
 			strTrimmed++;
 		}
 	}
 	return tokens;
-
 }
 
+void printOperator(Operator operator) {
+	switch (operator) {
+		case Plus:
+			printf(" (+) ");
+			break;
+		case Minus:
+			printf(" (-) ");
+			break;
+		case Times:
+			printf(" (*) ");
+			break;
+		case Divide:
+			printf(" (/) ");
+			break;
+		case NotAnOperator:
+			printf("NOT AN OPERATOR!");
+			break;
+	}
+}
+
+void printToken(Token token) {
+	if (token.type == NumberType) {
+		printf("(Number: %d)", token.number.value);
+	} else {
+		printOperator(token.operator);
+	}
+}
+
+int countChars(char *input) {
+	int counter = 0;
+	for (; *input != '\n'; input++) {
+		counter++;
+	}
+	return counter;
+}
+
+
 int main(void) {
-	char input[] = "2 + 3 * 6";
+	printf("Enter the expression you want to parse: \n");
 
-	Token *tokens = tokenise(input, sizeof(input));
+	//char buffer[256];
 
+	//scanf("%s", buffer);
+
+	char *buffer = "2 + 2 * 2";
+
+	Token *tokens = tokenise(buffer, sizeof(buffer));
+
+	for (int i = 0; i < 5; i++) {
+		printToken(*(tokens + i));
+	}
+	printf("\n");
 	return 0;
 }

@@ -1,5 +1,5 @@
 CC     = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -g
 BUILD  = parser
 
 all: $(BUILD)
