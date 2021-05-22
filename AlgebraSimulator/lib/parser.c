@@ -3,10 +3,11 @@
 #include<string.h>
 #include<stdlib.h>
 #include<assert.h>
+#include<stdint.h>
 
 static const int MAX_NUMBER_LENGTH = 10;
 
-enum Operator {Plus, Minus, Times, Divide, NotAnOperator};
+enum Operator {Plus, Minus, Times, Divide, NotAnOperator, SentinelOp};
 
 typedef enum Operator Operator;
 
@@ -65,7 +66,7 @@ int countSpaces(char *str) {
 	int counter = 0;
 	char *ptr = str;
 	for(; *ptr != '\0'; ptr++) {
-		if (isWhiteSpace(*ptr) || (!isDigit(*ptr) && !isOperator(*ptr)) && *ptr != '0') {
+		if (isWhiteSpace(*ptr)) {
 			counter++;
 		}
 	}
@@ -77,9 +78,7 @@ char * trim(char *str, int length) {
 	char * trimmedString = (char*) malloc(length - spacesCount);
 	char * trimmedPtr = trimmedString;
 	for (int i = 0; i < length; i++) {
-		if (!isWhiteSpace(*(str + i))
-					&& (isDigit(*(str + i)) || isOperator(*(str + i)))
-		) {
+		if (!isWhiteSpace(*(str + i))) {
 			*trimmedPtr = *(str + i);	
 			trimmedPtr++;
 		}
@@ -122,6 +121,10 @@ Token * tokenise(char *str, int length) {
 			strTrimmed++;
 		}
 	}
+	Token terminalToken;
+	terminalToken.type = OperatorType;
+	terminalToken.operator = SentinelOp;
+	*tokensPtr = terminalToken; 
 	return tokens;
 }
 
@@ -141,6 +144,9 @@ void printOperator(Operator operator) {
 			break;
 		case NotAnOperator:
 			printf("NOT AN OPERATOR!");
+			break;
+		case SentinelOp:
+			printf("\n");
 			break;
 	}
 }
@@ -165,17 +171,23 @@ int countChars(char *input) {
 int main(void) {
 	printf("Enter the expression you want to parse: \n");
 
-	//char buffer[256];
+	char *buffer = NULL;
+	int read;
+	size_t len;
 
-	//scanf("%s", buffer);
+	read = getline(&buffer, &len, stdin);
 
-	char *buffer = "2 + 2 * 2";
-
-	Token *tokens = tokenise(buffer, sizeof(buffer));
-
-	for (int i = 0; i < 5; i++) {
-		printToken(*(tokens + i));
+	if (-1 != read) {
+		Token *tokens = tokenise(buffer, countChars(buffer));
+		int i = 0;
+		while ((*(tokens + i)).operator != SentinelOp) {
+			printToken(*(tokens + i));
+			i++;
+		}
+		printf("\n");
+	} else {
+		printf("No line entered.");
 	}
-	printf("\n");
+
 	return 0;
 }
