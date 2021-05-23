@@ -1,9 +1,3 @@
-#include<stdio.h>
-#include<stdbool.h>
-#include<string.h>
-#include<stdlib.h>
-#include<assert.h>
-#include<stdint.h>
 #include"parser.h"
 
 bool isDigit(char ch) {
@@ -180,6 +174,7 @@ void printPromptMessage(void) {
 }
 
 
+/*
 int main(void) {
 	printPromptMessage();
 
@@ -194,6 +189,6 @@ int main(void) {
 	} else {
 		printf("No line entered.");
 	}
-
 	return 0;
 }
+*/
