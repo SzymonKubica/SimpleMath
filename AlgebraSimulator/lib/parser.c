@@ -58,8 +58,8 @@ int countSpaces(char *str) {
 
 char * trim(char *str, int length) {
 	int spacesCount = countSpaces(str);
-	char * trimmedString = (char*) malloc(length - spacesCount);
-	char * trimmedPtr = trimmedString;
+	char *trimmedString = (char*) malloc(length - spacesCount);
+	char *trimmedPtr = trimmedString;
 	for (int i = 0; i < length; i++) {
 		if (!isWhiteSpace(*(str + i))) {
 			*trimmedPtr = *(str + i);	
@@ -175,7 +175,7 @@ void printTokens(char *buffer) {
 	printf("\n");
 }
 
-void printPromptMessage() {
+void printPromptMessage(void) {
 	printf("Enter the expression you want to parse: \n");
 }
 

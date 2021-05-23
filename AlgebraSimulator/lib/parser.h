@@ -34,4 +34,18 @@ struct Token {
 
 typedef struct Token Token;
 
+extern bool isDigit(char ch);
+extern bool isOperator(char ch);
+extern bool isWhiteSpace(char ch);
 
+extern Operator parseOperator(char op);
+extern int countSpaces(char *str);
+extern char * trim(char *str, int length);
+
+extern Token * tokenise(char *str, int length);
+extern void printToken(Token token);
+
+extern int countChars(char *input);
+
+extern void printTokens(char *buffer);
+extern void printPromptMessage(void);
